@@ -1,0 +1,90 @@
+  ;;;;;;;;; Begin Block 0 ;;;;;;;;;
+.class public simple 
+.super java/lang/Object 
+  ;;;;;;;;; End Block 0 ;;;;;;;;;
+  ;;;;;;;;; Begin Block 1 ;;;;;;;;;
+.method public <init>()V 
+  aload_0 
+  invokenonvirtual java/lang/Object/<init>()V 
+  return 
+  ;;;;;;;;; End Block 1 ;;;;;;;;;
+  ;;;;;;;;; Begin Block 2 ;;;;;;;;;
+.end method 
+  ;;;;;;;;; End Block 2 ;;;;;;;;;
+  ;;;;;;;;; Begin Block 3 ;;;;;;;;;
+.method public static println(I)I 
+.limit stack 5 
+.limit locals 2 
+  getstatic java/lang/System/out Ljava/io/PrintStream; 
+  iload 0 
+  ifeq false_label 
+  ; Block 3 exits to blocks 4 5
+  ;;;;;;;;; End Block 3 ;;;;;;;;;
+  ;;;;;;;;; Begin Block 4 ;;;;;;;;;
+  ldc "true" 
+  ifne print_it 
+  ; Block 4 exits to blocks 5 10
+  ;;;;;;;;; End Block 4 ;;;;;;;;;
+  ;;;;;;;;; Begin Block 5 ;;;;;;;;;
+false_label: ;label (target of jump) 
+  ldc "false" 
+  ifne fi 
+  ; Block 5 exits to blocks 6 8
+  ;;;;;;;;; End Block 5 ;;;;;;;;;
+  ;;;;;;;;; Begin Block 6 ;;;;;;;;;
+dummy_label: ; label
+  pop 
+  ldc 0 
+  ifeq fi 
+  ; Block 6 exits to blocks 7 8
+  ;;;;;;;;; End Block 6 ;;;;;;;;;
+  ;;;;;;;;; Begin Block 7 ;;;;;;;;;
+  pop 
+  ldc "true" 
+  goto test0 
+  ; Block 7 exits to blocks 11
+  ;;;;;;;;; End Block 7 ;;;;;;;;;
+  ;;;;;;;;; Begin Block 8 ;;;;;;;;;
+fi: ;label (target of jump) 
+  pop 
+  ldc "false" 
+  ifne fi 
+  ; Block 8 exits to blocks 9 8
+  ;;;;;;;;; End Block 8 ;;;;;;;;;
+  ;;;;;;;;; Begin Block 9 ;;;;;;;;;
+  pop 
+  iload 2 
+  ldc "anybla" 
+  astore 
+  pop 
+  ldc "true" 
+  goto print_it 
+  ;;;;;;;;; End Block 9 ;;;;;;;;;
+  ;;;;;;;;; Begin Block 10 ;;;;;;;;;
+print_it: ;label (target of jump) 
+  invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V 
+  iload 0 
+  ireturn 
+  pop 
+  ldc"wathever" 
+  ;;;;;;;;; End Block 10 ;;;;;;;;;
+  ;;;;;;;;; Begin Block 11 ;;;;;;;;;
+test0: ;label (target of jump) 
+  fload 0.0 
+  fload2.0 
+  fmul 
+.end method 
+  ;;;;;;;;; End Block 11 ;;;;;;;;;
+  ;;;;;;;;; Begin Block 12 ;;;;;;;;;
+.method public static main()F 
+.limit stack 50 
+.limit locals 50 
+  ldc 0.0 
+  fstore 0 
+  ; Removed useless load/pop pair: [ldc, "test"][pop] 
+  fload 0 
+  freturn 
+  ;;;;;;;;; End Block 12 ;;;;;;;;;
+  ;;;;;;;;; Begin Block 13 ;;;;;;;;;
+.end method 
+  ;;;;;;;;; End Block 13 ;;;;;;;;;

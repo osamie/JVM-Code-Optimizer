@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# If a command line argument is given then assume it is a file name and
+# compile that file
+if [[ $# -eq 1 ]]; then
+	java JasminOptimizer < $1
+else
+	java JasminOptimizer
+fi
+
