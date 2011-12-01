@@ -18,6 +18,7 @@ import java.util.StringTokenizer;
 public class JasminOptimizer{
 
     Vector<CodeBlock> codeBlocks;
+    Vector<CodeBlock> assessedBlocks;
 
     public static void main(String args[]) {
     	
@@ -182,12 +183,42 @@ public class JasminOptimizer{
         }
         
         optimizeJumpsToUnconditionalJumps();
-        
-    
-        	
-
 
     }
+    
+protected void optimize_EliminateUselessStore() {
+		
+ 		
+		for (int i = 0; i < codeBlocks.size() - 1; i++) {
+			CodeBlock b = codeBlocks.elementAt(i);
+			LinkedList<Vector<String>> lines = b.getLines();
+			
+			for(int j = 0; j<lines.size();j++){
+				if(isStore(lines.get(j).elementAt(0))){
+					
+					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+						if(leadsStoreToDeadEnd(j, b)){
+							System.out.println(lines.get(j).elementAt(0));
+							//lines.remove(j);
+							
+							lines.get(j).setElementAt("pop", 0);
+							lines.get(j).add("; Removed store that leads to dead end --- QUESTION 7");
+							
+							//System.out.println(lines.get(j).elementAt(0));
+							//lines.get(j).add("; Removed store that leads to dead end --- QUESTION 7 \n");
+							
+							
+							/*Vector<String> v = new Vector<String>();
+                            v.add("pop");
+                            v \n");
+                            lines.add(v);
+                            ++j;*/
+						}
+				}
+			}
+			
+		}
+	}
     
     
     protected void optimizeBLOCK_LoadPopPairs(CodeBlock b) {
@@ -205,8 +236,45 @@ public class JasminOptimizer{
 					v.add("; useless load/pop pair removed (including useless instructions in between)" + line);
 					i.add(v);
 				}
-			}
 		}
+	}
+    protected void findRemovableBlocks(CodeBlock b){
+		
+		if(assessedBlocks.contains(b)) return;
+		
+		assessedBlocks.addElement(b);
+		
+		
+		Vector<CodeBlock> successors = b.getSuccessors();
+		
+		for(int i =0;i<successors.size();i++){
+			findRemovableBlocks(successors.get(i));
+		}
+    }
+    
+    protected void optimize_RemoveNonVisitedBlocks() {
+    		assessedBlocks = new Vector<CodeBlock>();
+    		
+    		findRemovableBlocks(codeBlocks.get(0));
+    		
+    	
+    		for (int i = 0; i < codeBlocks.size(); i++) {
+    			CodeBlock b = codeBlocks.elementAt(i);
+    			LinkedList<Vector<String>> lines = b.getLines();
+    			
+    			for(int j = 0; j<lines.size();j++){
+    				if(isDirective(lines.get(j).elementAt(0))){
+    					
+    					if(!assessedBlocks.contains(b)){
+    						findRemovableBlocks(b);
+    					}
+    				}
+    			}
+    			
+    		}
+    		
+    		codeBlocks = assessedBlocks;
+    	}
     
     protected void optimize_PrecalculateArithmeticConstants(CodeBlock b) {
         LinkedList<Vector<String>> lines = b.getLines();
@@ -837,6 +905,82 @@ protected void delete_previous(ListIterator<Vector<String>> i) {
 	}else{
 		return;
 	}
+}
+
+protected boolean isStore(String s) {
+	String loadInstructions[] = { "istore", "astore", "fstore"};
+	for (int i = 0; i < loadInstructions.length; i++) {
+		if (s.compareTo(loadInstructions[i]) == 0) {
+			return true;
+		}
+	}
+	return false;
+}
+
+protected static boolean isLoad(String s) {
+	// FIXME: incomplete list
+	String loadInstructions[] = { "iload", "aload", "fload", "aaload",
+			"baload", "caload", "daload", "faload", "fload", "iaload"};
+	for (int i = 0; i < loadInstructions.length; i++) {
+		if (s.compareTo(loadInstructions[i]) == 0) {
+			return true;
+		}
+	}
+	return false;
+}
+
+protected boolean hasALoad(CodeBlock b, int currentStoreCount){
+	LinkedList<Vector<String>> lines = b.getLines();
+	
+	for(int j = 0; j<lines.size();++j){
+		if(isLoad(lines.get(j).elementAt(0))){
+			if(currentStoreCount == 0)	// no other stores met so load found and no dead end has been reached
+				return true;
+			else
+				--currentStoreCount;
+		}else if(isStore(lines.get(j).elementAt(0))){
+			++currentStoreCount;
+		}
+	}
+	
+	Vector<CodeBlock> successors = b.getSuccessors();
+	for(int i=0;i<successors.size();i++){
+	 if(hasALoad(successors.get(i), currentStoreCount)){
+		 return true;
+	 }
+	}
+	return false;
+	
+}
+
+protected boolean leadsStoreToDeadEnd(int currentLineIndex, CodeBlock b){
+	LinkedList<Vector<String>> lines = b.getLines();
+
+	int currentStoreCount = 0;
+	for(int j = currentLineIndex; j<lines.size();++j){
+		if(isLoad(lines.get(j).elementAt(0))){
+			if(currentStoreCount == 0)	{// no other stores met so load found and no dead end has been reached
+				//System.out.println("RETURNED" + lines.get(j).elementAt(0));
+				return false;
+			}else
+				--currentStoreCount;
+		}else if(isStore(lines.get(j).elementAt(0))){
+			++currentStoreCount;
+		}
+	}
+
+	// now go through all the reachable blocks. if at least one has a load then 
+	// we cannot assume that we always reach a dead end ! - return false
+	Vector<CodeBlock> successors = b.getSuccessors();
+	
+	for(int i=0;i<successors.size();i++){
+	 if(hasALoad(successors.get(i), currentStoreCount)){
+		 return false;
+	 }
+	}
+	
+	return true;
+	
 }
 
 
