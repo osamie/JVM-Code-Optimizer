@@ -3,7 +3,6 @@
 .super java/lang/Object
 .method public <init>()V
   aload_0
-
   invokenonvirtual java/lang/Object/<init>()V
   return
 .end method
@@ -22,51 +21,36 @@
    ifeq false_label
    ldc "true"
    ;goto print_it
-   ifne print_it
+   ifne dummy_label
    ;goto false_label
 false_label:
    ldc "false"
-   ifne fi
+   ldc 0
+   ifne dummy_label
+   ;ldc 2
+   ;ldc 3
+   ldc 6.0
+   ldc 2
+   fadd
    
+   ldc 2
+   ldc 2
+   ldc 2
+   ;ldc 2
+   fdiv
+   
+cipher_label:
+	ldc "table"
+	astore  
 dummy_label:
 	pop
-	ldc 0
-	ifeq fi
-	;goto fi
-	pop
-	ldc "true"
-	goto test0
-
-
-fi:  
-	pop
-	ldc "false"
-	ifne fi
-	pop
-	iload 2
-	;goto print_it
-	
-bla:
-	ldc "anybla"
-	astore 
-	
-tr: 
-	pop
-	ldc "true"
-	goto print_it
-	
-print_it:
-   invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-   iload 0
-   ireturn
-   
-test2: 
-	pop
-	ldc"wathever"
-test0:
-	fload 0.0
-	fload2.0
+	ldc 0	
+	fload 2.0
+	ldc 3
 	fmul
+	;goto test0
+
+
 .end method
 
 

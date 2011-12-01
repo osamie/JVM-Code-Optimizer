@@ -22,69 +22,47 @@
   ;;;;;;;;; End Block 3 ;;;;;;;;;
   ;;;;;;;;; Begin Block 4 ;;;;;;;;;
   ldc "true" 
-  ifne print_it 
-  ; Block 4 exits to blocks 5 10
+  ifne dummy_label 
+  ; Block 4 exits to blocks 5 7
   ;;;;;;;;; End Block 4 ;;;;;;;;;
   ;;;;;;;;; Begin Block 5 ;;;;;;;;;
 false_label: ;label (target of jump) 
   ldc "false" 
-  ifne fi 
-  ; Block 5 exits to blocks 6 8
+  ldc 0 
+  ifne dummy_label 
+  ; Block 5 exits to blocks 6 7
   ;;;;;;;;; End Block 5 ;;;;;;;;;
   ;;;;;;;;; Begin Block 6 ;;;;;;;;;
-dummy_label: ; label
-  pop 
-  ldc 0 
-  ifeq fi 
-  ; Block 6 exits to blocks 7 8
+  ldc 6 
+  dup 
+  fadd 
+  ldc 2 
+  ldc 2 
+  ldc 2 
+  fmul 
+  ldc "table" 
+  astore 
   ;;;;;;;;; End Block 6 ;;;;;;;;;
   ;;;;;;;;; Begin Block 7 ;;;;;;;;;
+dummy_label: ;label (target of jump) 
   pop 
-  ldc "true" 
-  goto test0 
-  ; Block 7 exits to blocks 11
-  ;;;;;;;;; End Block 7 ;;;;;;;;;
-  ;;;;;;;;; Begin Block 8 ;;;;;;;;;
-fi: ;label (target of jump) 
-  pop 
-  ldc "false" 
-  ifne fi 
-  ; Block 8 exits to blocks 9 8
-  ;;;;;;;;; End Block 8 ;;;;;;;;;
-  ;;;;;;;;; Begin Block 9 ;;;;;;;;;
-  pop 
-  iload 2 
-  ldc "anybla" 
-  astore 
-  pop 
-  ldc "true" 
-  goto print_it 
-  ;;;;;;;;; End Block 9 ;;;;;;;;;
-  ;;;;;;;;; Begin Block 10 ;;;;;;;;;
-print_it: ;label (target of jump) 
-  invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V 
-  iload 0 
-  ireturn 
-  pop 
-  ldc"wathever" 
-  ;;;;;;;;; End Block 10 ;;;;;;;;;
-  ;;;;;;;;; Begin Block 11 ;;;;;;;;;
-test0: ;label (target of jump) 
-  fload 0.0 
-  fload2.0 
+  ldc 0 
+  fload 2.0 
+  ldc 3 
   fmul 
 .end method 
-  ;;;;;;;;; End Block 11 ;;;;;;;;;
-  ;;;;;;;;; Begin Block 12 ;;;;;;;;;
+  ;;;;;;;;; End Block 7 ;;;;;;;;;
+  ;;;;;;;;; Begin Block 8 ;;;;;;;;;
 .method public static main()F 
 .limit stack 50 
 .limit locals 50 
   ldc 0.0 
   fstore 0 
-  ; Removed useless load/pop pair: [ldc, "test"][pop] 
+  ldc "test" 
+  pop 
   fload 0 
   freturn 
-  ;;;;;;;;; End Block 12 ;;;;;;;;;
-  ;;;;;;;;; Begin Block 13 ;;;;;;;;;
+  ;;;;;;;;; End Block 8 ;;;;;;;;;
+  ;;;;;;;;; Begin Block 9 ;;;;;;;;;
 .end method 
-  ;;;;;;;;; End Block 13 ;;;;;;;;;
+  ;;;;;;;;; End Block 9 ;;;;;;;;;
