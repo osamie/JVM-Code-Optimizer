@@ -171,10 +171,13 @@ public class JasminOptimizer{
      */
     public void optimize() {
         for (int i = 0; i < codeBlocks.size(); i++) {
-            CodeBlock b = codeBlocks.elementAt(i);
+        	
+        	CodeBlock b = codeBlocks.elementAt(i);
+        	optimizeBlock(b);
+        	optimizeBLOCK_LoadPopPairs(b);
             
-            optimizeBlock(b);
             optimize_PrecalculateArithmeticConstants(b);
+            
             
         }
         
@@ -186,15 +189,29 @@ public class JasminOptimizer{
 
     }
     
+    
+    protected void optimizeBLOCK_LoadPopPairs(CodeBlock b) {
+		LinkedList<Vector<String>> lines = b.getLines();
+		ListIterator<Vector<String>> i = lines.listIterator();
+		while (i.hasNext()) {
+			Vector line = (Vector) i.next();
+			String ins = (String) line.elementAt(0);
+			
+				if (isPopInstruction(ins)) {
+					
+					deletePrevious2(i); // the pop and the popped = 2
+					Vector<String> v = new Vector<String>(1);
+					
+					v.add("; useless load/pop pair removed (including useless instructions in between)" + line);
+					i.add(v);
+				}
+			}
+		}
+    
     protected void optimize_PrecalculateArithmeticConstants(CodeBlock b) {
         LinkedList<Vector<String>> lines = b.getLines();
         ListIterator<Vector<String>> i = lines.listIterator(); 
-
-        // since each mul or add or any other operation
-        // of the sort takes two paramters, we go two up
-        // which is the closest to 0 that we can stumble 
-        // upon an arithmetic operation
-        
+    
         if(i.hasNext()) i.next();
         if(i.hasNext()) i.next();
         
@@ -778,6 +795,51 @@ protected void optimizeJumpsToUnconditionalJumps() {
         }
         return false;        
     }
+    
+    protected boolean isRemovableONEaboveString(String s){
+		
+		String instructions[] = { "fload", "ldc" , "pop"};
+		for (int i = 0; i < instructions.length; i++) {
+			if (s.compareTo(instructions[i]) == 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+protected boolean isRemovableTWOaboveString(String s){
+	
+	String instructions[] = { "fmul", "dmul", "imul", "lmul", "fadd", "dadd", "iadd", "ladd", "fdiv", "ddiv", "idiv", "ldiv", "fsub", "dsub", "isub", "lsub" };
+	for (int i = 0; i < instructions.length; i++) {
+		if (s.compareTo(instructions[i]) == 0) {
+			return true;
+		}
+	}
+	return false;
+}
+
+
+protected void deletePrevious2(ListIterator<Vector<String>> i) {
+	delete_previous(i);
+	delete_previous(i);
+}
+protected void delete_previous(ListIterator<Vector<String>> i) {
+	
+	i.remove();
+	if(!i.hasPrevious()) return;
+	i.previous();
+	Vector line = (Vector) i.next();
+	String ins = (String) line.elementAt(0);
+	
+	if(isRemovableONEaboveString(ins)){
+		delete_previous(i);
+	}else if(isRemovableTWOaboveString(ins)){
+		deletePrevious2(i);
+	}else{
+		return;
+	}
+}
+
+
     
     
 }

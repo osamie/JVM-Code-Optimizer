@@ -39,11 +39,21 @@ false_label:
    ;ldc 2
    fdiv
    
+   fload 7
+  ldc 8.0
+  fmul
+  fload 2
+  ldc 5.0
+  fadd
+  fmul
+	pop
+   
 cipher_label:
 	ldc "table"
 	astore  
 dummy_label:
-	pop
+    
+	;pop
 	ldc 0	
 	fload 2.0
 	ldc 3
